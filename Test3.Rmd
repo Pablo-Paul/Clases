@@ -5,3 +5,5 @@ date: "2023-06-27"
 output: html_document
 ---
 
+Buenas tardes, creo que ahora sé cómo agregar archivos al GitHub. Pero desde la terminal, lo que no estoy logrando es que figure en el Git los archivos.
+
