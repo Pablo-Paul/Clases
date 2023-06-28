@@ -50,3 +50,32 @@ tabla_r_base <- round(prop.table(table(curso$programa)) * 100, digits = 1)
 class(tabla_r_base)
 
 # Paquetes para importar archivos: {readr} (para archivos más sencillos, como CSV), y {haven} (para archivos como SPSS)
+
+# Para actualizar en el github, tengo que seguir estos pasos: 
+# git add nombre_del_archivo.R
+# git commit -m "Descripción de los cambios realizados"
+# git push
+# Con esto debería actualizarse el GitHub
+
+# Cargo un archivo:
+
+base_inm <- read_csv(file="/Users/pabloalbornoz/Downloads/inmuebles-estado-nacional.csv",
+                     col_names = TRUE)
+
+class(base_inm)
+
+# Los proyectos de trabajo nos permiten evitar poner toda la ruta. En este proyecto, que se llama Test1,
+# la tenemos creada dentro de mi carpeta de Instrumentos de Análisis Urbano II 
+# Entonces ahora que pasamos el archivo a la carpeta del proyecto, directamente podemos importar el archivo sin la ruta
+# Con la tecla tab podemos ver los archivos que tenemos en el proyecto, cuando la apretamos dentro de las comillas
+# Esto viene bien para compartir y colaborar con el proyecto. Se usa para la reproducibilidad de los códigos. 
+# El ancla está en el archivo del Rproj, por lo que en tanto los archivos se muevan acompañandolo, le da lo mismo y lo lee en cualquier otra ubicación.
+
+base_inm <- read_csv("inmuebles-estado-nacional.csv",
+                     col_names = TRUE)
+
+# Con command+enter podemos correr el programa. 
+
+# Para el R Markdown, el ancla no es el proyecto, sino que es el archivo .Rmd. 
+# Si el archivo está en una carpeta por encima de donde está el archivo Rmd, se usa "../"
+
