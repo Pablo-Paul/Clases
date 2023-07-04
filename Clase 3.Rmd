@@ -1,0 +1,46 @@
+---
+title: "Clase 3"
+author: "Pablo Albornoz"
+date: "2023-07-04"
+output: html_document
+---
+
+# Trabajar con datos
+
+```{r}
+library(tidyverse)
+```
+
+Tenemos la presentación de la clase en este link: 
+
+[Clase 3](https://tuqmano.github.io/geo_utdt/sesiones/sesion3.html#1)
+
+[Resumen de Clase 2](https://gist.github.com/TuQmano/b72f9ebdae475c104364fcf9337fe4d2)
+
+[Programa Clase](https://tuqmano.github.io/geo_utdt/)
+
+## Importar datos
+
+
+En tydiverse tenemos los parámetros: 
+read_csv ()
+
+_Coma+Tab me permite ver los datos_
+
+Otra librería es HEVEN, permite leer otros formatos: 
+read_sas() --> SAS
+read_sav() --> SPSS
+read_dta() --> STATA
+
+```{r}
+library(haven)
+```
+
+Puedo copiar el link en donde está el archivo, para evitar descar la base:
+
+https://infra.datos.gob.ar/catalog/otros/dataset/6/distribution/6.1/download/inmuebles-estado-nacional.csv
+
+```{r}
+BaseInmuebles <- read_csv("https://infra.datos.gob.ar/catalog/otros/dataset/6/distribution/6.1/download/inmuebles-estado-nacional.csv")
+```
+
