@@ -44,3 +44,11 @@ https://infra.datos.gob.ar/catalog/otros/dataset/6/distribution/6.1/download/inm
 BaseInmuebles <- read_csv("https://infra.datos.gob.ar/catalog/otros/dataset/6/distribution/6.1/download/inmuebles-estado-nacional.csv")
 ```
 
+Importar plantillas de Google
+
+Dos link para instalar los paquetes:
+
+[googlesheets4](https://googlesheets4.tidyverse.org)
+
+[googledrive](https://googledrive.tidyverse.org)
+
