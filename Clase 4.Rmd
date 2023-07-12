@@ -1,0 +1,268 @@
+---
+title: "Clase4"
+author: "Pablo Albornoz"
+date: "2023-07-11"
+output: html_document
+---
+
+# Transformar datos 
+
+## Comando filter()
+
+Seleccionamos fila
+
+Paquete vroom nos ayuda a saber la estructura de los datos y se encarga de cargarlos. Por ejemplo, si no sé que si es un CSV u otro, vroom:(url) nos permite sacar eso
+
+entonces podemos poner
+
+url <- "página web"
+
+datos <- vroom(url)
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+url <- "https://infra.datos.gob.ar/catalog/otros/dataset/6/distribution/6.1/download/inmuebles-estado-nacional.csv"
+```
+
+```{r}
+datosUrl <- vroom::vroom(url)
+```
+```{r}
+datos <- read.csv("inmuebles-estado-nacional.csv")
+```
+
+Queremos datos de argentina no más
+
+```{r}
+unique(datos$pais)
+```
+```{r}
+datos_arg <- datos %>% 
+  filter(pais=="Argentina")
+```
+
+Para chequear que solo esté la categoría Argentina, ponemos
+
+unique(datos_arg$pais)
+
+```{r}
+unique(datos_arg$pais)
+```
+
+si quiero agregar otros países (uso el "o" que es la línea esta |, cosa que cuando busque alguna condición, la incluya. Si uso el "y" que es &, me buscaría la condición que sea Argentina y Chile, entonces no me va a aparecer.
+
+```{r}
+datos_new <- datos %>% 
+  filter(pais=="Argentina"|pais=="Brasil"|pais=="Chile")
+```
+
+otra opción: 
+
+```{r}
+datos_new1 <- datos %>% 
+  filter(pais%in%c("Argentina","Brasil","Chile"))
+```
+
+Chequeamos: 
+```{r}
+unique(datos_new1)
+```
+
+Evaluación con el %in%
+4 %in% c(1,2,3)
+
+4 %in% c(2,4,19)
+
+## Comando select ()
+
+Seleccionamos columnas
+
+Por nombre de la columna
+```{r}
+datos_arg_lat_long <- datos_arg %>% 
+select (codigo_del_inmueble, latitud, longitud)
+```
+
+Por posición de la columna
+
+```{r}
+colnames(datos_arg)
+```
+Entonces queremos las columnas 1, 11 y 12
+
+```{r}
+datos_arg_sel1 <- datos_arg %>% 
+  select(1, 11, 12)
+```
+
+```{r}
+colnames(datos_arg_sel1)
+```
+
+Puede seleccionar patrones de texto, que empiecen con una letra, o que terminen con una letra. 
+
+POr ejemplo, select(ends_with("ud")), va a seleccionar todas las columnas que terminen con ud (como longitud, latitud); select(starts_with("l")); contains("it")...
+
+también las puedo combinar todas: 
+
+```{r}
+datos_arg_sel5 <- datos_arg %>% 
+  select(1,pais, starts_with("l"), contains("ll"))
+```
+
+Si no quiero alguna columna específica, con el signo menos -
+select(-organizacion), nos saca la columna organización.
+
+## Crear o reemplazar variables con mutate()
+
+Veo lo que contiene la columna de superficie aproximada:
+```{r}
+summary(datos_arg$superficie_aproximada_m2)
+```
+
+selecciono los más chicos
+
+```{r}
+datos_arg_limpio <- datos_arg %>% 
+  filter(superficie_aproximada_m2<=10000)
+```
+
+Creo variables, por ejemplo, con rangos: ~
+```{r}
+datos_arg_limpio <- datos_arg %>% 
+  mutate(superficie_m2_rangos=case_when(superficie_aproximada_m2<10000~"menor a 10.000",
+                                        superficie_aproximada_m2>=10000~"mayor a 10.000"))
+```
+
+Ahora tengo categorías.
+
+```{r}
+table(datos_arg_limpio$superficie_m2_rangos)
+```
+
+Tenemos 43 inmuebles menos a los 10.000m2, y 569 mayores a 10.000m2. 
+
+Esto 0:253 es lo mismo que el vector c(1,2,3,4,5,...,253). Es una forma abreviada de escribir un vector continuo. 
+
+También puedo usar el inclusivo %in% (para números enteros)
+
+datos_arg_limpio <- datos_arg %>% 
+  mutate(superficie_m2_rangos=case_when(superficie_aproximada_m2 %in% 0:10000 ~ "menor a                                                                                         10.000",
+                                        superficie_aproximada_m2 >= 10.000 ~ "mayor a                                                                                         10.000")
+                                        
+Para solucionar el tema de los decimales: 
+
+mutate(nombre_de_columna= round(nombre_columna, digits=0))
+
+Con esto pasé todo a números enteros. y ahora me va a seleccionar los datos que antes tenían decimales. 
+
+## Ordenar valores en una columna con arrange ()
+
+## agrupar con group_by y summarize
+
+Summarize crea un data frame cuyo contenido sea lo que defina entre paréntesis, que es cada columna. Por ejemplo, nuevo data frame con la cantidad de filas que hay en datos: 
+
+```{r}
+datos %>% 
+  summarise(conteo=n(),
+            valor_maximo=max(superficie_aproximada_m2),
+            valor_medio=mean(superficie_aproximada_m2),
+            valor_desvio=sd(superficie_aproximada_m2), 
+            valor_cv=valor_desvio/valor_medio*100)
+```
+El group_by realiza la operación para cada una de las categoráis para las variables que defino:
+
+```{r}
+datos %>%
+  group_by(pais) %>% 
+  summarise(conteo=n(),
+            valor_maximo=max(superficie_aproximada_m2),
+            valor_medio=mean(superficie_aproximada_m2),
+            valor_desvio=sd(superficie_aproximada_m2), 
+            valor_cv=valor_desvio/valor_medio*100)
+```
+# Nueva Clase
+
+Instalo un nuevo paquete que es el skimr. Me sirve para tener un pantallazo de los data frames
+
+```{r}
+library(skimr)
+```
+
+inspeccionamos los datos:
+
+```{r}
+skimr::skim(datos)
+```
+
+## Slice
+
+
+Los diez valores más altos de superficie m2
+```{r}
+datos %>% 
+  slice_max(order_by=superficie_aproximada_m2,
+            n=10)
+```
+Y las más bajas del ránking:
+
+```{r}
+datos %>% 
+  slice_min(order_by = superficie_aproximada_m2,
+            n=10)
+```
+
+Estas funciones reemplazan mejor a la función que usábamos cuando usábamos top_n.
+
+## Varianes mutate_*() y summarise_*()
+
+Reemplazadas por el across ()
+
+```{r}
+class(datos$latitud)
+class(datos$longitud)
+```
+
+los paso a texto: 
+
+```{r}
+datos_new <- datos %>% 
+  mutate(latitud=as.character(latitud),
+         longitud=as.character(longitud))
+```
+
+```{r}
+class(datos$latitud)
+class(datos$longitud)
+```
+
+Con el croos puesto hacer todo esto:
+
+```{r}
+datos_new <- datos %>% 
+  mutate(across(.col=c("latitud", "longitud"),
+                ~as.character(.)))
+```
+
+O tambien puedo redondear a un dígito
+
+```{r}
+datos_new <- datos %>% 
+  mutate(across(.col=c("superficie_aproximada_m2", "latitud", "longitud"),
+                ~round(.,digits=1)))
+```
+
+Ahora estas columnas solo tienen un decimal
+
+El punto . es un place holder. El punto toma el valor de la variable que el across termina de operar. Entonces, en la operación, primero redondea la columna aproximada, después la latitud, deespués la longitud. me ahorra tener que poner todos las columnas de nuevo.
+
+Chequear lo del across en [página web](https://dplyr.tidyverse.org/reference/across.html)
+
+## Join
+
+Chequear esta [página](https://www.garrickadenbuie.com/project/tidyexplain/)
+
+
