@@ -265,4 +265,71 @@ Chequear lo del across en [página web](https://dplyr.tidyverse.org/reference/ac
 
 Chequear esta [página](https://www.garrickadenbuie.com/project/tidyexplain/)
 
+## Extrater caracteres según la posición del texto
+
+funciones para trabajar con texto *str* de la librería tydiverse.
+
+```{r}
+texto_1 <- "aca va toto con minuscula o se pudre"
+```
+
+Pongo mayúscula la primera letra:
+```{r}
+str_to_sentence(texto_1)
+```
+
+Todo en mayúscula:
+```{r}
+str_to_upper(texto_1)
+```
+
+A título: 
+```{r}
+str_to_title(texto_1)
+```
+
+```{r}
+texto_ejemplo1 <- "año 1"
+```
+
+me quiero quedar con una letra o grupo de letras por posición de dígito
+
+```{r}
+str_sub(texto_ejemplo1,
+        start=1,
+        end=3)
+```
+
+Sirve por ejemplo cuando no puedo pasar a número un texto: 
+
+```{r}
+anio <- c("año 1985", "año 1986", "año 1987")
+```
+
+```{r}
+anio_num <- str_sub(string=anio,
+                    start=5,
+                    end=9)
+```
+
+```{r}
+anio_num <- as.numeric(anio_num)
+```
+
+```{r}
+mean(anio_num)
+```
+
+para que todas tengan la misma cantidad, rellenamos valores por izquierda o por derecha: 
+
+```{r}
+cod_area <- c("11", "011", "11", "011")
+
+str_pad(string=cod_area,
+        width = 3,
+        side="left",
+        pad="0")
+```
+
+Los corregimos con el str_pad y el width que es el que nos da el ancho ideal.
 
