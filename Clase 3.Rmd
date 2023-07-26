@@ -44,7 +44,7 @@ https://infra.datos.gob.ar/catalog/otros/dataset/6/distribution/6.1/download/inm
 BaseInmuebles <- read_csv("https://infra.datos.gob.ar/catalog/otros/dataset/6/distribution/6.1/download/inmuebles-estado-nacional.csv")
 ```
 
-Importar plantillas de Google
+## Importar plantillas de Google
 
 Dos link para instalar los paquetes:
 
@@ -52,3 +52,44 @@ Dos link para instalar los paquetes:
 
 [googledrive](https://googledrive.tidyverse.org)
 
+## Otros para importar
+
+[vroom::vroom()](https://www.tidyverse.org/blog/2019/05/vroom-1-0-0/)
+
+[data.table::fread()](https://rdatatable.gitlab.io/data.table/)
+
+[DB](https://db.rstudio.com/)
+
+Importar con {datapasta}, que es un add-ins (no es tanto código, se usa más para la botonera)
+
+Esto es divino, porque puedo traer tablas de cualquier lado, sin tener que pasarla a mano. 
+
+Ya lo instalé, y no hace falta volver a activarlo con un library. 
+
+## Ordenar los datos
+
+Es más que nada para ver cómo se presentan los datos
+
+Consenso para denominar columnas
+- Sin espacios
+- Sin acentos
+- Separados por guión bajo
+- Todo en minúscula
+
+Función clean_names() para tydiverse, me permite reemplazar los títulos de las columnas por lo concensuado, para que sea más fácil.
+
+Hay para pivotear tablas
+
+pivot_longer() Para cuando la tabla esté a lo ancho, y lo pasamos a lo largo.
+pivot_wider()
+
+
+## Transformar
+
+Uno a uno, principales verbos de {dplyr} para manipular la data
+filter(): reduce la cantidad de filas (observaciones)
+select(): reduce la cantidad de columnas (variables)
+mutate(): crea o modifica variables
+arrange(): ordena (sort)
+group_by(): agrupa observaciones
+summarize(): reduce múltiples observaciones a un valor
