@@ -1,0 +1,302 @@
+---
+title: "Clase 5"
+author: "Pablo Albornoz"
+date: "2023-07-25"
+output: html_document
+---
+
+# Trabajo Práctico
+
+## Consignas
+
+Ver la página web de la [CLASE](https://tuqmano.github.io/geo_utdt/)
+
+[TP](https://tuqmano.github.io/geo_utdt/tp_1.html)
+
+Y el link para mi [GitHub](https://github.com/Pablo-Paul?tab=repositories&q=https%3A%2F%2Fgithub.com%2FTuQmano%2FMEU_2023.git&type=&language=&sort=)
+
+# Sesión 5
+
+Hoy vemos algo más interensante. 
+
+## Funciones + Loops/Iteraciones (for)
+
+- Para qué sirven las funciones
+- Aprender a crear una función propia
+- "Si se repite más de tres veces, merece ser una función"
+- Iterar (for)
+
+Corro la librería de tydiverse para algunas funciones
+
+```{r}
+library(tidyverse)
+```
+
+
+### Funciones
+
+Las funciones nos permiten agrupar varios códigos o acciones que se repiten en una sola, cosa de no tener que escribir todo el código otra vez. 
+
+#### ¿Cómo se arma una función? 
+
+Lo primero que necesitamos es el nombre (intuitivo, evitamos espacios, repetir nombres, codificaciones idiomáticas como acentos, etc). Y después con el código **function** metemos el argumento, que es todo lo que tiene que saber para calcularla.
+
+nombre_de_la_funcion <- function(argumento){sentencia de R que resuelve la función}
+
+*Ejemplo*
+
+Quiero una función que sume 2 a un número cualquiera: 
+
+sumo_dos_a <- function(numero){numero + 2}
+
+```{r}
+sumo_dos_a <- function(numero){numero + 2}
+```
+
+ahora la tenemos en el ambiente. Entonces va a estar disponible para R. 
+
+Ahora ejecutamo las sentencia: 
+
+```{r}
+sumo_dos_a(4)
+```
+
+Entonces ahora tenemos el resultado de 4 + 2 = 6
+
+*Otro ejemplo* 
+
+Quiero que cualquier valor se multiplique por cuatro
+
+```{r}
+multiplico_por_cuatro <- function(valor){valor * 4}
+```
+
+Lo corro: 
+
+```{r}
+multiplico_por_cuatro(100)
+```
+
+*Otro ejemplo para trabajar con nombre*
+
+```{r}
+como_esta_persona <- function(texto){paste("el", texto, "está en cualquiera", sep = " ")}
+```
+
+```{r}
+como_esta_persona("Pablo")
+```
+
+*Otro ejemplo: Promedio*
+
+Ya existe esta función, pero la podemos hacer a nuestro gusto, para tres valores.
+
+```{r}
+calc_promedio_3 <- function(valor1, valor2, valor3){(valor1 + valor2 + valor3)/3}
+```
+
+Vemos si funciona: 
+
+```{r}
+calc_promedio_3(10, 20, 30)
+```
+
+*Otro ejemplo¨*
+
+Quiero aplicar siempre un formato de salida de valores numéricos para que el separador de decimales sea la , y el de miles el .:
+
+formateo <- function(valor) {
+  format(valor, 
+         big.mark = ".", 
+         decimal.mark = ",", 
+         digits = 2, nsmall = 2)}
+formateo(2349382.456)
+## [1] "2.349.382,46"
+
+El format me cambia los separadores de miles y de decimales, para que cambie como lo leemos en español. 
+
+
+```{r}
+format(30.256,
+       big.mark =".",
+       decimal.mark=",",
+       digits=2, nsmal =2)
+```
+
+Ahora quiero hacer eos, pero sin tanto argumento. Creo la función "formateo", para que me devuelva automáticamente separados por puntos y con dos decimales: 
+
+```{r}
+formateo <- function(valor){format(valor, big.mark=".", decimal.mark=",", digits=2, nsmall=2)}
+```
+
+
+Por ejemplo, meto 40000
+```{r}
+formateo(40000)
+```
+
+Y ahí lo tenemos como 40.000,00
+
+*Otro ejemplo con base de datos* 
+
+Para una base de datos, como la EPH, calculo la tasa de empleo. Lo que usualmente hago es esto: 
+
+library(eph)
+base_eph_ind <- toybase_individual_2016_04
+base_eph_ind %>% 
+  summarise(pob_tot = sum(PONDERA),
+            pob_ocupada = sum(PONDERA[ESTADO == 1]),
+            tasa_empleo = pob_ocupada / pob_tot * 100) %>% 
+  select(tasa_empleo)
+##   tasa_empleo
+## 1    43.78169
+
+Entonces, ahora como argumento le puedo poner una base de datos. Entonces, cualquier base de datos que cargue, se calcula automáticamente. Summarise es todo lo mismo.
+
+tasa_empleo <- function(base){
+  base %>% 
+    summarise(pob_tot = sum(PONDERA),
+              pob_ocupada = sum(PONDERA[ESTADO == 1]),
+              tasa_empleo = pob_ocupada / pob_tot * 100)  %>% 
+    select(tasa_empleo)
+}
+
+Entonces, ahora para correr sería por ejemplo: 
+
+tasa_empleo(base_eph)
+
+Instalé el paquete de la eph y lo corro 
+
+```{r}
+library(eph)
+```
+
+
+```{r}
+base_eph_ind_2022_t4 <- get_microdata(2022,4)
+```
+
+### Condicionales
+
+If: Ejecutar sentencias sólo si se cumple una condición (si la sentencia es verdadera)
+
+If else: es un poco más que *if*. Va a pasar algo si la función se cumple, pero también va a pasar otra cosa si la condición no se cumple. 
+
+if(condicion){codigo a ejecutar si se cumple la condición}
+
+Jugamos: vemos cómo R entiende el +. Si ejecutamos, nos da el resultado de la suma
+```{r}
+2+2
+```
+
+Ahora, con el == lo que R nos da, es si es verdadero o falso el argumento
+
+```{r}
+2+2==4
+```
+
+```{r}
+if(2+2 == 4){print("todo marcha bien")}
+```
+
+```{r}
+if(2+2 == 5){print("todo marcha bien")}
+```
+
+El *if else* me va a permitir hacer cosas cuando da false la condición. 
+
+if(condicion){
+  codigo a ejecutar si se cumple la condición
+} else {
+  codigo a ejecutar si NO se cumple la condición
+}
+
+La función *exists* me dice si está o no la base en mi environment. Solo me devuelve TRUE (si existe) y FALSE (si no existe)
+
+```{r}
+library(vroom)
+```
+
+
+```{r}
+if (exists("base_eph_ind_2022_t4") == TRUE){
+  print("la base ya se encuentra en el ambiente")
+} else {
+  print("la base no se encuenta. La importamos") 
+  base_eph_ind_2022_t4 <- eph::get_microdata(2022,4)
+  print("ahora se encuentra cargada")
+} 
+```
+
+*Ejemplo de dos parámetros*
+
+tasa <- function(base, tasa = NULL) {
+
+
+Armo la tabla: 
+
+  tabla <- base %>% 
+    summarise(pob_tot = sum(PONDERA),
+              pob_activa = sum(PONDERA[ESTADO %in% c(1,2)]),
+              pob_ocupada = sum(PONDERA[ESTADO == 1]),
+              pob_desocupada = sum(PONDERA[ESTADO == 2]),
+              pob_inactiva = sum(PONDERA[ESTADO %in% c(3,4)]),
+              tasa_empleo = pob_ocupada / pob_tot * 100,
+              tasa_desempleo = pob_desocupada / pob_activa * 100,
+              tasa_inactividad = pob_inactiva / pob_tot * 100)
+  
+  
+  Defino la salida:
+  
+  if(tasa == "empleo") { # <-- Si se cumple esta condición
+  
+    select(tabla, tasa_empleo) # <-- Quiero que pase esto
+    
+  } else { # <-- ¿Y si no?
+  
+    if(tasa == "desempleo"){ # <-- Chequeo si se cumple esta condición
+      select(tabla, tasa_desempleo) # <-- Y que pase esto
+    }
+  }
+}
+
+```{r}
+tasa <- function(base, tasa = NULL) {
+  tabla <- base %>% 
+    summarise(pob_tot = sum(PONDERA),
+              pob_activa = sum(PONDERA[ESTADO %in% c(1,2)]),
+              pob_ocupada = sum(PONDERA[ESTADO == 1]),
+              pob_desocupada = sum(PONDERA[ESTADO == 2]),
+              pob_inactiva = sum(PONDERA[ESTADO %in% c(3,4)]),
+              tasa_empleo = pob_ocupada / pob_tot * 100,
+              tasa_desempleo = pob_desocupada / pob_activa * 100,
+              tasa_inactividad = pob_inactiva / pob_tot * 100)
+  if(tasa == "empleo") {
+    select(tabla, tasa_empleo) 
+  } else {
+    if(tasa == "desempleo"){
+      select(tabla, tasa_desempleo)
+    }
+  }
+}
+```
+
+ejecutamos: 
+
+
+tasa(base_eph_ind_2022_t4)
+
+va a dar error.
+
+Da error porque tengo que definir el parámetro:
+
+```{r}
+tasa(base_eph_ind_2022_t4, tasa="empleo")
+```
+
+```{r}
+tasa(base_eph_ind_2022_t4, tasa="desempleo")
+```
+
+Eso cuando tengo el NULL en el código de la función. En todo caso, puedo reemplazar directamente el NULL por "empleo" o lo que quiero. 
+
