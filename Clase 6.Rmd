@@ -1,0 +1,90 @@
+---
+title: "Clase 6"
+author: "Pablo Albornoz"
+date: "2023-08-01"
+output: html_document
+---
+
+# DATOS GEOGRÁFICOS
+
+### Geometrías
+
+Punto, polígonos, líneas y sus combinaciones (pensamos por el momento en dos dimensiones)
+
+¿Qué hacemos con esta geometría? 
+
+- Predicados: se le puede preguntar cosas, por ejemplo, si está vacía la celda -comando is.empty()-, y nos devuelve si es verdadero o falso. 
+- Tomar medidas: por ejemplo, el área de un polígono -comando area()-
+- Transformaciones: como el centroide, el punto que está en el medio de un polígo -comando centroid()-
+
+Básicamente le agregamos un input. 
+
+¿Sobre qué operan?
+
+- unary: una única geometry
+- binary: pares de geometry
+- n-ary: conjunto de geometries
+
+Proyecciones
+Son necesarias para representar información tridimensional sobre algo plano, bidimensional. Por ejemplo, el Web Mercator (más para mapas interactivos, como Google o la librería leaflet) o la equidistante cilídrica (por ejemplo, que se trabaja con ggplot2). Cada forma de proyección tiene ventajas y desventajas, por lo que la decisión termina recayendo sobre lo que queremos demostrar o cómo queremos trabajar. 
+
+## Librería SF
+
+Ya la tengo instalada
+
+```{r}
+library(sf)
+```
+
+(Instalé la GeoAR)
+
+```{r}
+library(geoAr)
+```
+
+(Instalé rmapshaper)
+
+```{r}
+library(rmapshaper)
+```
+
+GeoAr me puede traer la geografía de algún lugar
+
+```{r}
+geoAr::show_arg_codes()
+```
+
+```{r}
+tuc <- get_geo (geo = "TUCUMAN")
+```
+
+```{r}
+plot(tuc)
+```
+
+```{r}
+class(tuc)
+```
+
+```{r}
+library(gt)
+```
+
+```{r}
+geoAr::show_arg_codes(viewer = T)
+```
+
+Es importante transformar todos los datos al mismo formato. Por ejemplo, todo a SF. 
+
+```{r}
+show_arg_codes()
+```
+
+```{r}
+library(devtools)
+```
+
+```{r}
+devtools::install_github("politicaargentina/electorAR")
+```
+
