@@ -189,5 +189,4 @@ ggthemes::tableau_color_pal()
 
 #### Ejemplo
 
-Trabaja con datos de "properati"
-
+Trabaja con datos de "properati". Ver clase 7, parte 2
