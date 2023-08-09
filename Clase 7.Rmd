@@ -1,0 +1,193 @@
+---
+title: "Clase 7"
+author: "Pablo Albornoz"
+date: "2023-08-08"
+output: html_document
+---
+
+# Visualización de datos (Data Viz I)
+
+## Gramática de los datos
+
+Es el conjunto de reglas para la producción de gráficos estadísticos.
+Se basa en la definición de capas.
+
+Muchos libros menciona... 
+
+Utilizamos el [ggplot2](https://ggplot2.tidyverse.org/index.html)
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+```
+
+En Help de RStudio tenemos las cheatsheets de varias librerías. En [Browse CheatSheets](https://posit.co/resources/cheatsheets/)
+
+Thomas Lin Pedersen - [Video en YouTube](https://www.youtube.com/watch?v=h29g21z0a68)
+
+### RECETA BÁSICA para la visualización
+
+ggplot(data = <DATA>) + 
+  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+  
+
+Instalo una nueva librería, que es de datos
+
+```{r}
+library(datos)
+```
+
+Por ejemplo, ahora puedo acceder a estos datos sobre autos:
+
+```{r}
+millas
+```
+
+```{r}
+datos::aerolineas
+```
+
+```{r}
+datos::millas
+```
+
+
+
+Aplico la receta básica que tenemos para graficar:
+
+```{r}
+ggplot(data = millas) + 
+  geom_point(mapping = aes(x=cilindrada,
+                           y=autopista))
+```
+
+Podemos agregarle una tercer variable, como clase: 
+
+```{r}
+ggplot(data = millas) + 
+  geom_point(mapping = aes(x=cilindrada,
+                           y=autopista,
+                           color=clase))
+```
+
+Diferencia entre mapping y setting
+
+En este caso, el código no estaría bien para que me salgan azul los puntos:
+```{r}
+ggplot(data = millas) + 
+  geom_point(mapping = aes(x=cilindrada,
+                           y=autopista,
+                           color="blue"))
+```
+
+Lo correcto, sería por fuera de las aesthetics (aes)
+
+```{r}
+ggplot(data = millas) + 
+  geom_point(mapping = aes(x=cilindrada,
+                           y=autopista),
+             colour="blue")
+```
+
+```{r}
+ggplot(data = millas) + 
+  geom_point(mapping = aes(x=cilindrada,
+                           y=autopista,
+                           shape=clase),
+             colour="blue")
+```
+
+```{r}
+ggplot(data = millas) + 
+  geom_point(mapping = aes(x=cilindrada,
+                           y=autopista),
+             colour="blue",
+             shape=3)
+```
+
+```{r}
+ggplot(data = millas) + 
+  geom_point(mapping = aes(x=cilindrada,
+                           y=autopista,
+                           size=clase),
+             colour="blue",
+             shape=20)
+```
+
+alpha: transparencia
+fill: color dentro o contorno
+
+Geometrías (hay muchísimas!)
+- Geompoints
+- Goemsmooth (por defecto. Sino se puede usar el "method", como una regresión más lineal. Nos muestra los errores estándar por default. Para sacarlo: se=FALSE)
+
+```{r}
+ggplot(data = millas) + 
+  geom_smooth(mapping = aes(x=cilindrada,
+                           y=autopista),
+             colour="blue")
+```
+
+Todo juntos: 
+
+```{r}
+ggplot(data = millas) +
+  geom_point(mapping = aes(x = cilindrada, y = autopista), colour="blue") +
+  geom_smooth(mapping = aes(x = cilindrada, y = autopista), colour="red")
+```
+
+Puedo resumir aun más el código para no repetir los ejes: 
+
+```{r}
+ggplot(data = millas, aes(x = cilindrada, y = autopista)) +
+  geom_point(color="red") +
+  geom_smooth()
+```
+
+
+### Facetas (divisiones)
+
+```{r}
+ggplot(data = millas) +
+  geom_point(mapping = aes(x = cilindrada, y = autopista, color=clase)) +
+  facet_wrap(~ clase, nrow = 2)
+```
+
+### Filtrar datos
+
+```{r}
+ggplot(millas, aes(cilindrada, autopista)) +
+  geom_point() +
+  geom_point(data = millas %>% 
+               filter(fabricante == "audi"), color = "blue", size =3) +
+  geom_smooth(se = FALSE) +
+  labs(title = "Performance de los AUDI",  subtitle = "Un gráfico del TuQmano", 
+        y = "Etiqueta Y",  x = "Etiqueta X", 
+        caption = "FUENTE: {datos} 'R Para Ciencia de Datos'")
+```
+
+```{r}
+library(ggthemes)
+```
+
+Algo estético, con la librería ggthemes: 
+```{r}
+ggplot(millas, aes(cilindrada, autopista)) +
+  geom_point() +
+  geom_point(data = millas %>% 
+               filter(fabricante == "audi"), color = "blue", size =3) +
+  geom_smooth(se = FALSE) +
+  labs(title = "Performance de los AUDI",  subtitle = "Un gráfico del TuQmano", 
+        y = "Etiqueta Y",  x = "Etiqueta X", 
+        caption = "FUENTE: {datos} 'R Para Ciencia de Datos'") +
+  ggthemes::theme_economist_white()
+```
+
+```{r}
+ggthemes::tableau_color_pal()
+```
+
+#### Ejemplo
+
+Trabaja con datos de "properati"
+
