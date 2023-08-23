@@ -1,0 +1,88 @@
+---
+title: "Clase 8"
+author: "Pablo Albornoz"
+date: "2023-08-15"
+output: html_document
+---
+
+# Visualización de los datos
+
+[Clase 8](https://tuqmano.github.io/geo_utdt/sesiones/sesion8.html#1)
+
+## Tipo gráfico
+
+Elegir el gráfico para presentar los datos es fundamental para transmitir el mensaje con precisión. Por ejemplo, un gráfico de tortas puede ser mejor expuesto en un gráfico de barras. Al profe no le gustan los gráficos de torta. 
+
+### Problema de los mapas coropléticos
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+```
+
+Los mapas podrían estar representando de forma desmedida los datos. Por ejemplo, en términos de superficies y las elecciones, las escalas resultan difíciles de interpretar. 
+
+Se pueden utilizar cartogramas, que modifican la morfología del territorio en base a las variables que queremos estudiar. 
+
+Limitaciones varias
+
+Visualizar una variable / valor por unidad geográfica
+
+Solo hace uso del color para codificación visual (dificultad para calcular diferencias)
+
+Sesgo a favor de grandes unidades geográficas
+
+## Grillas como si fuesen mapas
+
+```{r}
+library(geofacet)
+```
+```{r}
+grid_preview(argentina_grid2)
+```
+Se puede hacer una grilla de cualquier cosa: 
+
+
+[App](https://hafen.github.io/grid-designer/#data=)
+
+```{r}
+mygrid <- data.frame(
+  name = c("Comuna 2", "Comuna 3", "Comuna 4", "Comuna 5", "Comuna 1", "Comuna 6", "Comuna 7", "Comuna 8", "Comuna 9", "Comuna 10", "Comuna 11", "Comuna 12", "Comuna 13", "Comuna 14", "Comuna 15"),
+  code = c("C2", "C3", "C4", "C5", "C1", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15"),
+  row = c(2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5),
+  col = c(1, 2, 3, 4, 4, 1, 2, 3, 4, 1, 2, 3, 1, 2, 3),
+  stringsAsFactors = FALSE
+)
+geofacet::grid_preview(mygrid)
+```
+
+```{r}
+library(geoAr)
+```
+
+
+```{r}
+library(geoAr)
+```
+
+
+
+```{r}
+p <- geoAr::get_geo(geo = "TUCUMAN") %>% 
+   ggplot2::ggplot() + #  SETTING color
+   ggplot2::geom_sf(color = "blue")
+p
+```
+```{r}
+library(ggplot2)
+```
+
+
+```{r}
+p <- geoAr::get_geo(geo = "TUCUMAN") %>% 
+   ggplot2::ggplot() + #  SETTING color
+   ggplot2::geom_sf(color = "blue")
+
+p + 
+  aes(fill = p$data$coddepto_censo)
+```
