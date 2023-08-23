@@ -1,0 +1,142 @@
+---
+title: "Clase 9"
+author: "Pablo Albornoz"
+date: "2023-08-22"
+output: html_document
+---
+
+# Sesión 9: GEO Data VIZ I
+
+Visualización de datos georreferenciados
+
+ggplot2
+
+a. geoAr
+```{r}
+library(ggplot2)
+library(geoAr)
+```
+
+b. sf
+
+```{r}
+library(sf)
+```
+
+## Live Coding
+
+Facetado con geoAr
+
+```{r}
+library(geofacet)
+```
+Exploro grilla
+ 
+```{r}
+show_arg_codes(viewer = T)
+```
+
+Descargo grilla ARG
+
+```{r}
+argetina <- get_grid(district = "ARGENTINA")
+```
+
+Datos electorales
+
+```{r}
+library(electorAr)
+```
+
+```{r}
+```
+
+
+```{r}
+show_available_elections(source = "data", viewer= TRUE)
+```
+
+```{r}
+datos_electorales <- get_election_data(district = "arg", category = "presi", round = "balota", year = 2015, level= "provincia") %>% 
+  get_names()
+```
+
+grafico
+
+```{r}
+library(dbplyr)
+library(tidyverse)
+```
+
+
+```{r}
+ggplot(datos_electorales) +
+  geom_col(aes(x=votos,
+               y=nombre_lista)) +
+  facet_wrap(facets= ~ name_prov)
+```
+
+Podemos resolver haciendo porcentajes: 
+```{r}
+datos_electorales_porcentaje <- datos_electorales %>% 
+  mutate(votos_pct = votos/sum(votos))
+```
+
+```{r}
+ggplot(datos_electorales_porcentaje) +
+  geom_col(aes(x=votos_pct,
+               y=nombre_lista, fill=nombre_lista)) +
+  facet_wrap(facets= ~ name_prov) +
+  scale_fill_manual(values = c("green","yellow","lightblue","purple"))
+```
+
+```{r}
+ggplot(datos_electorales_porcentaje) +
+  geom_col(aes(x = votos_pct, 
+               y = nombre_lista, fill = nombre_lista)) +
+   facet_wrap(facets = ~ name_prov) 
+```
+
+```{r}
+arg_geom <- get_geo(geo="ARGENTINA", level="provincia")
+```
+
+```{r}
+ggplot(arg_geom) +
+  geom_sf()
+```
+
+## Unir con datos electorales
+
+```{r}
+data_completa <- arg_geom %>%
+  add_geo_codes() %>% 
+  left_join(datos_electorales, by="codprov")
+```
+
+calculamos el indicador que queremos visualizar
+
+Diferencia entre dos listas
+
+```{r}
+datos_para_graficar <- data_completa %>%
+  select(nombre_lista, votos,everything()) %>% 
+  filter(nombre_lista %in% c("FRENTE PARA LA VICTORIA", "CAMBIEMOS")) %>% 
+  select(-listas) %>% 
+  pivot_wider(names_from = "nombre_lista",values_from="votos") %>% 
+  janitor::clean_names() %>% 
+  mutate(dif= frente_para_la_victoria - CAMBIEMOS)
+```
+
+
+Viz de mapa estático
+
+```{r}
+ggplot(datos_para_graficar) +
+  geom_sf(aes(fill= dif))
+```
+
+## Mapas SF
+
+Nueva librería... ver clases
+
